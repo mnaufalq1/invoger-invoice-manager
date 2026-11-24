@@ -1,0 +1,18 @@
+model Payment {
+  id            String   @id @default(cuid())
+  userId        String
+  documentId    String
+  amount        Decimal  @db.Decimal(15, 2)
+  paymentDate   DateTime @default(now())
+  paymentMethod String   @default("BANK_TRANSFER")
+  reference     String?
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([userId, paymentDate])
+  @@index([documentId])
+}
+

@@ -1,0 +1,13 @@
+model Plan {
+  code           String   @id
+  name           String
+  monthlyPrice   Int      @default(0)
+  invoiceLimit   Int?
+  quotationLimit Int?
+  features       Json
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  subscriptions Subscription[]
+}

@@ -1,0 +1,52 @@
+enum DocumentType {
+  INVOICE
+  QUOTATION
+}
+
+enum DocumentStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model Document {
+  id              String         @id @default(cuid())
+  userId          String
+  customerId      String
+  type            DocumentType
+  status          DocumentStatus @default(DRAFT)
+  documentNumber  String
+  issueDate       DateTime       @default(now())
+  dueDate         DateTime?
+  currency        String         @default("IDR")
+  subtotal        Decimal        @default(0) @db.Decimal(15, 2)
+  discountAmount  Decimal        @default(0) @db.Decimal(15, 2)
+  taxAmount       Decimal        @default(0) @db.Decimal(15, 2)
+  total           Decimal        @default(0) @db.Decimal(15, 2)
+  notes           String?
+  terms           String?
+  convertedFromId String?        @unique
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+
+  items DocumentItem[]
+
+  payments Payment[]
+
+  convertedFrom Document? @relation("DocumentConversion", fields: [convertedFromId], references: [id], onDelete: SetNull)
+
+  convertedTo Document? @relation("DocumentConversion")
+
+  @@unique([userId, documentNumber])
+  @@index([userId, type, createdAt])
+  @@index([userId, status])
+  @@index([customerId])
+}

@@ -1,0 +1,28 @@
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  PAST_DUE
+  CANCELLED
+  TRIALING
+}
+
+model Subscription {
+  id                     String             @id @default(cuid())
+  userId                 String             @unique
+  planCode               String             @default("FREE")
+  status                 SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart     DateTime           @default(now())
+  currentPeriodEnd       DateTime?
+  provider               String?
+  providerCustomerId     String?
+  providerSubscriptionId String?            @unique
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  plan Plan @relation(fields: [planCode], references: [code], onDelete: Restrict)
+
+  @@index([planCode])
+  @@index([status, currentPeriodEnd])
+}

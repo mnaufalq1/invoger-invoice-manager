@@ -1,0 +1,15 @@
+model DocumentItem {
+  id          String   @id @default(cuid())
+  documentId  String
+  description String
+  quantity    Decimal  @default(1) @db.Decimal(12, 2)
+  unit        String   @default("unit")
+  unitPrice   Decimal  @default(0) @db.Decimal(15, 2)
+  lineTotal   Decimal  @default(0) @db.Decimal(15, 2)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+}

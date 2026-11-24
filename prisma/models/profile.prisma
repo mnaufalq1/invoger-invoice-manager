@@ -1,0 +1,14 @@
+model Profile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  businessName    String?
+  businessEmail   String?
+  businessPhone   String?
+  businessAddress String?
+  taxNumber       String?
+  logoUrl         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
